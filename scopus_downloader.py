@@ -14,7 +14,7 @@ outfilename= 'C:/Users/jbishoff/Desktop/Corpus_with_abstracts.txt'
 infile=open(infilename,'r', encoding='utf8')
 outfile=open(outfilename, 'w', encoding='utf8')
 i=1
-scopus_api_key = '9f95fe86cdff38efe1b9d8151e327f78'
+scopus_api_key = 'INSERT_API_KEY_HERE'
 for line in infile:
     print(i)
     title_text = line

@@ -5,16 +5,19 @@ Spyder Editor
 
 This is a temporary script file.
 """
+
 import urllib
 import requests
 import json
 import xml.etree.ElementTree as ET
+
 infilename='C:/Users/jbishoff/Desktop/reduced_Corpus.txt'
 outfilename= 'C:/Users/jbishoff/Desktop/Corpus_with_abstracts.txt'
+scopus_api_key = 'INSERT_API_KEY_HERE'
 infile=open(infilename,'r', encoding='utf8')
 outfile=open(outfilename, 'w', encoding='utf8')
 i=1
-scopus_api_key = 'INSERT_API_KEY_HERE'
+
 for line in infile:
     print(i)
     title_text = line
@@ -30,13 +33,13 @@ for line in infile:
         eid = scopusjson['search-results']['entry'][0]['eid']
         #go get the abstract text
         abstract_url = 'https://api.elsevier.com/content/abstract/eid/' + eid + '?apiKey=' + scopus_api_key + '&view=meta_abs'
-        abstractresponse = requests.get(abstract_url)
+        abstractresponse = requests.get(abstract_url)       
+        #take abstract_response xml and parse out the abstract
         namespaces = {'ce':'http://www.elsevier.com/xml/ani/common',
                       'dc':'http://purl.org/dc/elements/1.1/',
                       'prism':'http://prismstandard.org/namespaces/basic/2.0/',
                       'abstract':'http://www.elsevier.com/xml/svapi/abstract/dtd',
                       }
-        #take abstract_response xml and parse out the abstract
         root = ET.fromstring(abstractresponse.text)
         coredata = root.find('abstract:coredata', namespaces)
         title = coredata.find('dc:title', namespaces)
@@ -54,7 +57,7 @@ for line in infile:
         outline = str(i)+ ' | ' + title.text + ' | ' + the_damn_abstract + '\n'
         outfile.write(outline)           
         
-    else:
+    else: #there are 0 or > 1 results in the search for the title
         outline = str(i) + ' | ' + line.rstrip() + ' | ABSTRACT NOT FOUND \n'
         outfile.write(outline)
     i+=1

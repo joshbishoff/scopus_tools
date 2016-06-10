@@ -24,10 +24,10 @@ for line in infile:
     scopusresponse=requests.get(url)
     scopusjson = scopusresponse.json()
     number_results = scopusjson['search-results']['opensearch:totalResults']
-
+    
+#if there is exactly one result from the search
     if number_results == "1":
         eid = scopusjson['search-results']['entry'][0]['eid']
-        title = scopusjson['search-results']['entry'][0]['dc:title']
         #go get the abstract text
         abstract_url = 'https://api.elsevier.com/content/abstract/eid/' + eid + '?apiKey=' + scopus_api_key + '&view=meta_abs'
         abstractresponse = requests.get(abstract_url)
@@ -36,7 +36,7 @@ for line in infile:
                       'prism':'http://prismstandard.org/namespaces/basic/2.0/',
                       'abstract':'http://www.elsevier.com/xml/svapi/abstract/dtd',
                       }
-        #take abstract_response and xml it
+        #take abstract_response xml and parse out the abstract
         root = ET.fromstring(abstractresponse.text)
         coredata = root.find('abstract:coredata', namespaces)
         title = coredata.find('dc:title', namespaces)
